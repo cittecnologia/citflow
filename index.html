@@ -1,0 +1,1927 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="CITFLOW — DevOps as a Service para empresas de produto digital. CI/CD, Kubernetes, Terraform, Observabilidade e FinOps com especialistas sob demanda. -40% em custos cloud. Diagnóstico gratuito.">
+  <title>CITFLOW — DevOps as a Service | CIT Tecnologia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="logo_solta.png">
+  <style>
+    /* ─── RESET & BASE ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0A0A0F;
+      color: #F0F0FF;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    img { max-width: 100%; display: block; }
+    a { text-decoration: none; color: inherit; }
+
+    /* ─── TOKENS ────────────────────────────────────────────── */
+    :root {
+      --bg-base: #0A0A0F;
+      --bg-card: #111118;
+      --bg-card-hover: #13131C;
+      --border: #1E1E2E;
+      --border-glow: rgba(94,106,210,0.35);
+      --brand: #5E6AD2;
+      --brand-light: #7B86E8;
+      --accent: #00D4FF;
+      --grad: linear-gradient(135deg, #5E6AD2, #00D4FF);
+      --text-1: #F0F0FF;
+      --text-2: #9090B0;
+      --text-3: #52526A;
+      --success: #22C55E;
+      --mono: 'JetBrains Mono', monospace;
+      --radius-sm: 6px;
+      --radius: 10px;
+      --radius-lg: 14px;
+      --shadow-card: 0 0 0 1px var(--border), 0 4px 24px rgba(0,0,0,0.45);
+      --shadow-glow: 0 0 32px rgba(94,106,210,0.28);
+    }
+
+    /* ─── TYPOGRAPHY ────────────────────────────────────────── */
+    h1 { font-size: clamp(2.4rem, 6vw, 4.5rem); font-weight: 800; line-height: 1.08; letter-spacing: -0.03em; }
+    h2 { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 700; line-height: 1.15; letter-spacing: -0.02em; }
+    h3 { font-size: clamp(1.1rem, 2vw, 1.4rem); font-weight: 600; line-height: 1.3; }
+    p  { font-size: 1.0625rem; color: var(--text-2); line-height: 1.72; }
+
+    .gradient-text {
+      background: var(--grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ─── LAYOUT ─────────────────────────────────────────────── */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    section { padding: 100px 0; }
+    .section-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(94,106,210,0.1);
+      border: 1px solid rgba(94,106,210,0.22);
+      color: #8B8BF0;
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 5px 13px; border-radius: var(--radius-sm);
+      margin-bottom: 20px;
+    }
+    .section-header { text-align: center; margin-bottom: 64px; }
+    .section-header p { max-width: 600px; margin: 16px auto 0; font-size: 1.05rem; }
+
+    /* ─── BUTTONS ────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9375rem; font-weight: 600;
+      padding: 13px 26px; border-radius: var(--radius);
+      cursor: pointer; border: none; transition: all 0.18s ease;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--grad);
+      color: #fff;
+      box-shadow: var(--shadow-glow);
+    }
+    .btn-primary:hover {
+      opacity: 0.9;
+      box-shadow: 0 0 44px rgba(94,106,210,0.45);
+      transform: translateY(-1px);
+    }
+    .btn-outline {
+      background: transparent;
+      color: #A0A8E8;
+      border: 1px solid rgba(94,106,210,0.38);
+    }
+    .btn-outline:hover {
+      border-color: rgba(94,106,210,0.65);
+      color: #fff;
+      background: rgba(94,106,210,0.08);
+      transform: translateY(-1px);
+    }
+    .btn-lg { padding: 15px 32px; font-size: 1rem; }
+
+    /* ─── ANIMATIONS ─────────────────────────────────────────── */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes gradientShift {
+      0%,100% { background-position: 0% 50%; }
+      50%      { background-position: 100% 50%; }
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    @keyframes terminalBlink {
+      0%,100% { opacity: 1; }
+      50%      { opacity: 0; }
+    }
+    @keyframes pulse-glow {
+      0%,100% { box-shadow: 0 0 24px rgba(94,106,210,0.3); }
+      50%      { box-shadow: 0 0 48px rgba(94,106,210,0.55); }
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0px); }
+      50%      { transform: translateY(-8px); }
+    }
+
+    .animate-on-scroll {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .animate-on-scroll.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .stagger-1 { transition-delay: 0.05s; }
+    .stagger-2 { transition-delay: 0.12s; }
+    .stagger-3 { transition-delay: 0.19s; }
+    .stagger-4 { transition-delay: 0.26s; }
+    .stagger-5 { transition-delay: 0.33s; }
+    .stagger-6 { transition-delay: 0.40s; }
+
+    /* ─── DIVIDER ─────────────────────────────────────────────── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       NAVBAR
+    ════════════════════════════════════════════════════════════ */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      transition: background 0.3s, backdrop-filter 0.3s, border-color 0.3s;
+      border-bottom: 1px solid transparent;
+    }
+    nav.scrolled {
+      background: rgba(10,10,15,0.82);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-color: var(--border);
+    }
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto; padding: 0 24px;
+      height: 64px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .nav-logo-img {
+      height: 30px; width: 30px; border-radius: 20%; flex-shrink: 0;
+    }
+    .nav-logo-text {
+      font-size: 1.15rem; font-weight: 700; letter-spacing: -0.04em;
+      background: var(--grad);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .nav-links {
+      display: flex; align-items: center; gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.875rem; color: var(--text-2); font-weight: 500;
+      transition: color 0.15s;
+    }
+    .nav-links a:hover { color: var(--text-1); }
+    .nav-cta { display: flex; gap: 12px; }
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px; cursor: pointer;
+      background: none; border: none; padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 22px; height: 2px;
+      background: var(--text-2); border-radius: 2px; transition: all 0.2s;
+    }
+    .mobile-menu {
+      display: none; position: fixed; top: 64px; left: 0; right: 0; bottom: 0;
+      background: rgba(10,10,15,0.97); backdrop-filter: blur(20px);
+      padding: 32px 24px; flex-direction: column; gap: 28px; z-index: 999;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { font-size: 1.15rem; color: var(--text-2); font-weight: 500; }
+    .mobile-menu .btn { width: 100%; justify-content: center; }
+
+    /* ════════════════════════════════════════════════════════════
+       HERO
+    ════════════════════════════════════════════════════════════ */
+    #hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding-top: 80px; padding-bottom: 80px;
+      position: relative; overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(94,106,210,0.14) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 80% 60%, rgba(0,212,255,0.06) 0%, transparent 60%),
+        var(--bg-base);
+    }
+    .hero-grid {
+      position: absolute; inset: 0; z-index: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, black 0%, transparent 100%);
+    }
+    .hero-inner {
+      position: relative; z-index: 1;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 64px;
+      align-items: center;
+    }
+    .hero-content { animation: fadeInUp 0.7s ease both; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(94,106,210,0.1);
+      border: 1px solid rgba(94,106,210,0.28);
+      color: #8B8BF0; font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 6px 14px; border-radius: 999px;
+      margin-bottom: 28px;
+    }
+    .hero-badge::before {
+      content: '';
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--accent);
+      animation: pulse-glow 2s ease infinite;
+      box-shadow: 0 0 8px var(--accent);
+    }
+    .hero-title { margin-bottom: 22px; }
+    .hero-title em {
+      font-style: normal;
+      background: var(--grad);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero-sub {
+      font-size: 1.1rem; color: var(--text-2);
+      max-width: 520px; margin-bottom: 36px; line-height: 1.7;
+    }
+    .hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 52px; }
+    .hero-metrics {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1px; background: var(--border);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .hero-metric {
+      background: rgba(17,17,24,0.85);
+      padding: 18px 20px;
+    }
+    .hero-metric-value {
+      font-size: 1.65rem; font-weight: 800;
+      background: var(--grad);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      line-height: 1;
+    }
+    .hero-metric-label { font-size: 0.78rem; color: var(--text-2); margin-top: 5px; line-height: 1.4; }
+
+    /* Terminal */
+    .hero-terminal {
+      background: #0D0D14;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px var(--border);
+      animation: fadeInUp 0.7s 0.2s ease both, float 6s ease-in-out 1s infinite;
+    }
+    .terminal-header {
+      background: #111118; padding: 14px 18px;
+      display: flex; align-items: center; gap: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .terminal-dot {
+      width: 11px; height: 11px; border-radius: 50%;
+    }
+    .terminal-dot:nth-child(1) { background: #FF5F57; }
+    .terminal-dot:nth-child(2) { background: #FFBD2E; }
+    .terminal-dot:nth-child(3) { background: #28C840; }
+    .terminal-title { font-family: var(--mono); font-size: 0.75rem; color: var(--text-3); margin-left: 8px; }
+    .terminal-body { padding: 22px 22px 26px; font-family: var(--mono); font-size: 0.82rem; line-height: 1.85; }
+    .t-line { display: flex; align-items: center; gap: 10px; }
+    .t-check { color: var(--success); }
+    .t-run { color: var(--accent); }
+    .t-wait { color: var(--text-3); }
+    .t-label { color: var(--text-2); }
+    .t-time { color: var(--text-3); margin-left: auto; }
+    .t-step { color: var(--brand-light); font-weight: 500; }
+    .t-cursor {
+      display: inline-block; width: 8px; height: 14px;
+      background: var(--accent); vertical-align: middle;
+      animation: terminalBlink 1s step-end infinite;
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       LOGOS STRIP
+    ════════════════════════════════════════════════════════════ */
+    #logos-strip {
+      padding: 48px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .logos-label {
+      text-align: center; font-size: 0.75rem; font-weight: 500;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text-3); margin-bottom: 28px;
+    }
+    .marquee-track { overflow: hidden; }
+    .marquee-inner {
+      display: flex; gap: 56px; width: max-content;
+      animation: marquee 36s linear infinite;
+    }
+    .marquee-inner:hover { animation-play-state: paused; }
+    .logo-item {
+      display: flex; align-items: center; gap: 9px;
+      font-family: var(--mono); font-size: 0.82rem; font-weight: 500;
+      color: var(--text-3); white-space: nowrap;
+      transition: color 0.2s;
+    }
+    .logo-item:hover { color: var(--text-2); }
+    .logo-icon { width: 20px; height: 20px; opacity: 0.7; }
+
+    /* ════════════════════════════════════════════════════════════
+       PROBLEMA
+    ════════════════════════════════════════════════════════════ */
+    #problema { background: var(--bg-base); }
+    .problema-hook {
+      text-align: center; margin-bottom: 72px;
+    }
+    .problema-hook h2 { margin-bottom: 18px; }
+    .problema-hook p { max-width: 580px; margin: 0 auto; font-size: 1.05rem; }
+    .pain-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    }
+    .pain-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 30px 28px;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      position: relative; overflow: hidden;
+    }
+    .pain-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, #EF4444, #F97316);
+      opacity: 0; transition: opacity 0.2s;
+    }
+    .pain-card:hover {
+      border-color: rgba(239,68,68,0.25);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    }
+    .pain-card:hover::before { opacity: 1; }
+    .pain-icon {
+      width: 40px; height: 40px; border-radius: var(--radius-sm);
+      background: rgba(239,68,68,0.1);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px; font-size: 1.1rem;
+    }
+    .pain-card h3 { margin-bottom: 10px; font-size: 1.05rem; }
+    .pain-card p { font-size: 0.9rem; line-height: 1.65; }
+
+    /* ════════════════════════════════════════════════════════════
+       CONSEQUÊNCIAS
+    ════════════════════════════════════════════════════════════ */
+    #consequencias {
+      background: linear-gradient(180deg, var(--bg-base) 0%, #0D0D18 100%);
+    }
+    .consequencias-grid {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px;
+    }
+    .consequencia-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 26px 22px; text-align: center;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .consequencia-item:hover {
+      border-color: rgba(94,106,210,0.3);
+      transform: translateY(-3px);
+    }
+    .consequencia-icon {
+      font-size: 1.6rem; margin-bottom: 14px;
+      display: block;
+    }
+    .consequencia-item h3 { font-size: 0.95rem; margin-bottom: 8px; }
+    .consequencia-item p { font-size: 0.83rem; color: var(--text-3); line-height: 1.55; }
+    .consequencias-quote {
+      margin-top: 56px; text-align: center;
+      padding: 36px 40px;
+      background: rgba(94,106,210,0.05);
+      border: 1px solid rgba(94,106,210,0.14);
+      border-radius: var(--radius-lg);
+      font-size: 1.1rem; color: var(--text-2);
+      font-style: italic; line-height: 1.7;
+      max-width: 780px; margin: 56px auto 0;
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       SOLUÇÃO
+    ════════════════════════════════════════════════════════════ */
+    #solucao { background: #0D0D18; }
+    .solucao-intro {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 72px;
+      align-items: center; margin-bottom: 72px;
+    }
+    .solucao-intro-content h2 { margin-bottom: 20px; }
+    .solucao-intro-content p { margin-bottom: 14px; }
+    .solucao-checks { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-top: 24px; }
+    .solucao-checks li {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.95rem; color: var(--text-2);
+    }
+    .solucao-checks li::before {
+      content: '✓';
+      color: var(--success); font-weight: 700; font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+    .solucao-diff {
+      background: var(--bg-card);
+      border: 1px solid rgba(94,106,210,0.2);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      position: relative;
+    }
+    .solucao-diff::before {
+      content: '≠';
+      position: absolute; top: -14px; left: 28px;
+      background: var(--brand); color: #fff;
+      font-size: 1rem; font-weight: 700;
+      padding: 2px 10px; border-radius: var(--radius-sm);
+    }
+    .solucao-diff h3 { font-size: 1rem; margin-bottom: 14px; color: var(--text-1); }
+    .solucao-diff p { font-size: 0.9rem; margin-bottom: 10px; }
+
+    /* Pipeline */
+    .pipeline {
+      display: grid; grid-template-columns: repeat(5, 1fr);
+      gap: 0; position: relative;
+    }
+    .pipeline::before {
+      content: '';
+      position: absolute; top: 32px; left: 10%; right: 10%; height: 2px;
+      background: linear-gradient(90deg, var(--brand), var(--accent));
+      z-index: 0;
+    }
+    .pipeline-step {
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; padding: 0 12px;
+    }
+    .pipeline-num {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: var(--bg-card);
+      border: 2px solid var(--brand);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--mono); font-size: 0.9rem; font-weight: 600;
+      color: var(--brand); margin-bottom: 16px;
+      box-shadow: 0 0 20px rgba(94,106,210,0.25);
+    }
+    .pipeline-step h3 { font-size: 0.9rem; margin-bottom: 8px; }
+    .pipeline-step p { font-size: 0.8rem; color: var(--text-3); line-height: 1.55; }
+
+    /* ════════════════════════════════════════════════════════════
+       COMO FUNCIONA
+    ════════════════════════════════════════════════════════════ */
+    #como-funciona { background: var(--bg-base); }
+    .timeline { display: flex; flex-direction: column; gap: 0; max-width: 860px; margin: 0 auto; }
+    .timeline-item {
+      display: grid; grid-template-columns: 64px 1fr;
+      gap: 28px; position: relative;
+    }
+    .timeline-item:not(:last-child) .timeline-line {
+      position: absolute; left: 31px; top: 64px; bottom: 0;
+      width: 2px; background: linear-gradient(180deg, var(--brand) 0%, rgba(94,106,210,0.15) 100%);
+    }
+    .timeline-left { display: flex; flex-direction: column; align-items: center; }
+    .timeline-circle {
+      width: 64px; height: 64px; border-radius: 50%; flex-shrink: 0;
+      background: var(--bg-card); border: 2px solid var(--brand);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--mono); font-size: 0.85rem; font-weight: 600; color: var(--brand);
+      box-shadow: 0 0 24px rgba(94,106,210,0.2);
+      position: relative; z-index: 1;
+    }
+    .timeline-content {
+      padding: 0 0 56px 0;
+    }
+    .timeline-content h3 { margin-bottom: 10px; font-size: 1.15rem; }
+    .timeline-content p { font-size: 0.93rem; margin-bottom: 14px; }
+    .timeline-deliverables {
+      list-style: none; display: flex; flex-direction: column; gap: 6px;
+    }
+    .timeline-deliverables li {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 0.875rem; color: var(--text-3);
+    }
+    .timeline-deliverables li::before { content: '→'; color: var(--brand); flex-shrink: 0; }
+    .timeline-tag {
+      display: inline-block;
+      background: rgba(94,106,210,0.1); border: 1px solid rgba(94,106,210,0.2);
+      color: var(--brand); font-size: 0.7rem; font-weight: 600;
+      padding: 3px 10px; border-radius: var(--radius-sm);
+      margin-bottom: 10px; font-family: var(--mono);
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       BENEFÍCIOS
+    ════════════════════════════════════════════════════════════ */
+    #beneficios { background: #0D0D18; }
+    .benefits-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    }
+    .benefit-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px 28px;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      position: relative; overflow: hidden;
+    }
+    .benefit-card::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+      background: var(--grad); opacity: 0; transition: opacity 0.2s;
+    }
+    .benefit-card:hover {
+      border-color: var(--border-glow);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.4), var(--shadow-glow);
+    }
+    .benefit-card:hover::after { opacity: 1; }
+    .benefit-icon {
+      width: 44px; height: 44px; border-radius: var(--radius-sm);
+      background: rgba(94,106,210,0.1); border: 1px solid rgba(94,106,210,0.15);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 18px; font-size: 1.2rem;
+    }
+    .benefit-metric {
+      font-size: 0.75rem; font-family: var(--mono);
+      color: var(--accent); margin-bottom: 8px; font-weight: 500;
+    }
+    .benefit-card h3 { margin-bottom: 10px; font-size: 1.05rem; }
+    .benefit-card p { font-size: 0.9rem; line-height: 1.65; }
+
+    /* ════════════════════════════════════════════════════════════
+       STACK
+    ════════════════════════════════════════════════════════════ */
+    #stack { background: var(--bg-base); }
+    .stack-categories { display: flex; flex-direction: column; gap: 36px; }
+    .stack-category-label {
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--text-3);
+      margin-bottom: 14px;
+    }
+    .stack-logos {
+      display: flex; flex-wrap: wrap; gap: 12px;
+    }
+    .stack-logo-pill {
+      display: flex; align-items: center; gap: 9px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 10px 18px;
+      font-size: 0.875rem; font-weight: 500; color: var(--text-2);
+      transition: border-color 0.2s, color 0.2s, transform 0.15s;
+    }
+    .stack-logo-pill:hover {
+      border-color: rgba(94,106,210,0.35);
+      color: var(--text-1); transform: translateY(-2px);
+    }
+    .stack-logo-icon { font-size: 1.1rem; }
+
+    /* ════════════════════════════════════════════════════════════
+       COMPARATIVO
+    ════════════════════════════════════════════════════════════ */
+    #comparativo { background: #0D0D18; overflow-x: auto; }
+    .table-wrapper { overflow-x: auto; border-radius: var(--radius-lg); border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { background: #111118; }
+    thead th {
+      padding: 18px 22px; text-align: center;
+      font-size: 0.875rem; font-weight: 600;
+      border-bottom: 1px solid var(--border); color: var(--text-2);
+    }
+    thead th:first-child { text-align: left; color: var(--text-3); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; }
+    thead th.th-citflow {
+      background: rgba(94,106,210,0.08);
+      color: var(--brand); border-left: 1px solid rgba(94,106,210,0.25);
+      border-right: 1px solid rgba(94,106,210,0.25);
+    }
+    tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+    tbody tr:hover { background: rgba(255,255,255,0.02); }
+    tbody tr:last-child { border-bottom: none; }
+    tbody td {
+      padding: 16px 22px; text-align: center;
+      font-size: 0.875rem; color: var(--text-2);
+    }
+    tbody td:first-child { text-align: left; font-weight: 500; color: var(--text-1); }
+    tbody td.td-citflow {
+      background: rgba(94,106,210,0.05);
+      border-left: 1px solid rgba(94,106,210,0.18);
+      border-right: 1px solid rgba(94,106,210,0.18);
+      color: var(--text-1); font-weight: 500;
+    }
+    .check-yes  { color: var(--success); font-size: 1.1rem; }
+    .check-no   { color: #EF4444; font-size: 1.1rem; }
+    .check-warn { color: #F59E0B; font-size: 1.1rem; }
+
+    /* ════════════════════════════════════════════════════════════
+       RESULTADOS / CASES
+    ════════════════════════════════════════════════════════════ */
+    #resultados { background: var(--bg-base); }
+    .metrics-row {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 20px; margin-bottom: 64px;
+    }
+    .metric-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 32px 24px; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .metric-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: var(--grad);
+    }
+    .metric-number {
+      font-size: 2.8rem; font-weight: 800; line-height: 1;
+      background: var(--grad);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .metric-label { font-size: 0.85rem; color: var(--text-2); margin-top: 8px; line-height: 1.45; }
+    .cases-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .case-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 32px;
+      display: flex; flex-direction: column; gap: 20px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .case-card:hover { border-color: var(--border-glow); transform: translateY(-4px); }
+    .case-logo {
+      height: 36px; background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      display: flex; align-items: center; padding: 0 16px;
+      font-size: 0.78rem; color: var(--text-3); font-weight: 500; width: fit-content;
+    }
+    .case-tag {
+      font-size: 0.72rem; color: var(--text-3); font-family: var(--mono);
+    }
+    .case-quote {
+      font-size: 0.92rem; color: var(--text-2); line-height: 1.68; font-style: italic;
+      flex: 1;
+    }
+    .case-author { font-size: 0.8rem; color: var(--text-3); }
+    .case-metrics { display: flex; flex-direction: column; gap: 6px; }
+    .case-metric {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.82rem; color: var(--text-2);
+    }
+    .case-metric-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); flex-shrink: 0; }
+
+    /* ════════════════════════════════════════════════════════════
+       PARA QUEM
+    ════════════════════════════════════════════════════════════ */
+    #para-quem { background: #0D0D18; }
+    .audience-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    }
+    .audience-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 26px 24px;
+      display: flex; align-items: flex-start; gap: 14px;
+      transition: border-color 0.2s, transform 0.15s;
+    }
+    .audience-card:hover { border-color: var(--border-glow); transform: translateY(-2px); }
+    .audience-icon { font-size: 1.4rem; flex-shrink: 0; }
+    .audience-card h3 { font-size: 0.97rem; margin-bottom: 6px; }
+    .audience-card p { font-size: 0.84rem; line-height: 1.55; }
+
+    /* ════════════════════════════════════════════════════════════
+       FAQ
+    ════════════════════════════════════════════════════════════ */
+    #faq { background: var(--bg-base); }
+    .faq-grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
+    .faq-item {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .faq-item.open { border-color: rgba(94,106,210,0.3); }
+    .faq-question {
+      width: 100%; background: none; border: none;
+      padding: 20px 24px; display: flex; align-items: center;
+      justify-content: space-between; gap: 16px;
+      font-family: 'Inter', sans-serif; font-size: 0.97rem;
+      font-weight: 500; color: var(--text-1);
+      cursor: pointer; text-align: left;
+      transition: color 0.15s;
+    }
+    .faq-question:hover { color: var(--brand-light); }
+    .faq-chevron {
+      width: 20px; height: 20px; flex-shrink: 0;
+      color: var(--text-3); transition: transform 0.2s, color 0.2s;
+    }
+    .faq-item.open .faq-chevron { transform: rotate(180deg); color: var(--brand); }
+    .faq-answer {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.2s;
+      padding: 0 24px;
+    }
+    .faq-item.open .faq-answer { max-height: 300px; padding: 0 24px 20px; }
+    .faq-answer p { font-size: 0.92rem; line-height: 1.7; }
+
+    /* ════════════════════════════════════════════════════════════
+       CTA FINAL
+    ════════════════════════════════════════════════════════════ */
+    #cta-final {
+      background:
+        radial-gradient(ellipse 70% 80% at 50% 50%, rgba(94,106,210,0.1) 0%, transparent 70%),
+        #0D0D18;
+      text-align: center; padding: 120px 0;
+      position: relative; overflow: hidden;
+    }
+    #cta-final::before {
+      content: ''; position: absolute;
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 600px; height: 600px; border-radius: 50%;
+      border: 1px solid rgba(94,106,210,0.08); pointer-events: none;
+    }
+    #cta-final::after {
+      content: ''; position: absolute;
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 900px; height: 900px; border-radius: 50%;
+      border: 1px solid rgba(94,106,210,0.04); pointer-events: none;
+    }
+    .cta-final-inner { position: relative; z-index: 1; }
+    .cta-final-inner h2 { margin-bottom: 18px; max-width: 640px; margin-left: auto; margin-right: auto; }
+    .cta-final-inner p { max-width: 520px; margin: 0 auto 40px; font-size: 1.05rem; }
+    .cta-final-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 32px; }
+    .cta-trust {
+      display: flex; align-items: center; justify-content: center; gap: 24px;
+      font-size: 0.8rem; color: var(--text-3);
+    }
+    .cta-trust-item { display: flex; align-items: center; gap: 6px; }
+    .cta-trust-item::before { content: '✓'; color: var(--success); font-weight: 700; }
+
+    /* ════════════════════════════════════════════════════════════
+       FOOTER
+    ════════════════════════════════════════════════════════════ */
+    footer {
+      background: #080810; border-top: 1px solid var(--border);
+      padding: 64px 0 32px;
+    }
+    .footer-grid {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px; margin-bottom: 56px;
+    }
+    .footer-brand-name {
+      font-size: 1.2rem; font-weight: 800; letter-spacing: -0.04em;
+      background: var(--grad);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 6px;
+    }
+    .footer-brand-sub { font-size: 0.75rem; color: var(--text-3); margin-bottom: 16px; }
+    .footer-brand p { font-size: 0.875rem; color: var(--text-3); max-width: 280px; line-height: 1.65; margin-bottom: 20px; }
+    .footer-social { display: flex; gap: 12px; }
+    .footer-social a {
+      width: 36px; height: 36px; border-radius: var(--radius-sm);
+      background: var(--bg-card); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; color: var(--text-3);
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .footer-social a:hover { border-color: var(--border-glow); color: var(--text-1); }
+    .footer-col h4 {
+      font-size: 0.78rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-3); margin-bottom: 18px;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col li a { font-size: 0.875rem; color: var(--text-3); transition: color 0.15s; }
+    .footer-col li a:hover { color: var(--text-2); }
+    .footer-bottom {
+      padding-top: 28px; border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.8rem; color: var(--text-3);
+    }
+    .footer-bottom a { color: var(--text-3); transition: color 0.15s; }
+    .footer-bottom a:hover { color: var(--text-2); }
+
+    /* ════════════════════════════════════════════════════════════
+       RESPONSIVE
+    ════════════════════════════════════════════════════════════ */
+    @media (max-width: 1024px) {
+      .pain-grid { grid-template-columns: repeat(2, 1fr); }
+      .benefits-grid { grid-template-columns: repeat(2, 1fr); }
+      .metrics-row { grid-template-columns: repeat(2, 1fr); }
+      .cases-grid { grid-template-columns: 1fr 1fr; }
+      .audience-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .pipeline { grid-template-columns: repeat(3, 1fr); gap: 28px; }
+      .pipeline::before { display: none; }
+      .consequencias-grid { grid-template-columns: repeat(3, 1fr); }
+      .solucao-intro { grid-template-columns: 1fr; gap: 40px; }
+    }
+    @media (max-width: 768px) {
+      section { padding: 72px 0; }
+      .nav-links, .nav-cta { display: none; }
+      .hamburger { display: flex; }
+      .hero-inner { grid-template-columns: 1fr; gap: 48px; }
+      .hero-terminal { display: none; }
+      .hero-metrics { grid-template-columns: 1fr; gap: 1px; }
+      .pain-grid { grid-template-columns: 1fr; }
+      .benefits-grid { grid-template-columns: 1fr; }
+      .metrics-row { grid-template-columns: repeat(2, 1fr); }
+      .cases-grid { grid-template-columns: 1fr; }
+      .audience-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; gap: 36px; }
+      .pipeline { grid-template-columns: 1fr; gap: 24px; }
+      .consequencias-grid { grid-template-columns: repeat(2, 1fr); }
+      .cta-trust { flex-direction: column; gap: 10px; }
+      .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+      h1 { font-size: 2.2rem; }
+    }
+    @media (max-width: 480px) {
+      .hero-ctas { flex-direction: column; }
+      .hero-ctas .btn { width: 100%; justify-content: center; }
+      .metrics-row { grid-template-columns: 1fr; }
+      .consequencias-grid { grid-template-columns: 1fr; }
+      .cta-final-buttons { flex-direction: column; }
+      .cta-final-buttons .btn { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════════ NAVBAR ══════════════════════ -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <img src="logo_solta.png" alt="CITFLOW" class="nav-logo-img">
+        <span class="nav-logo-text"><span style="-webkit-text-fill-color:#fff;">cit</span>flow</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#solucao">Serviços</a></li>
+        <li><a href="#como-funciona">Como Funciona</a></li>
+        <li><a href="#resultados">Resultados</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+      <div class="nav-cta">
+        <a href="https://wa.link/oev6u3" target="_blank" rel="noopener" class="btn btn-outline" style="padding:9px 18px;font-size:0.85rem;">Falar com Especialista</a>
+        <a href="https://wa.link/oev6u3" target="_blank" rel="noopener" class="btn btn-primary" style="padding:9px 18px;font-size:0.85rem;">Diagnóstico Gratuito</a>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobile-menu">
+    <div style="display:flex;align-items:center;gap:10px;padding-bottom:16px;border-bottom:1px solid var(--border);margin-bottom:4px;">
+      <img src="logo_solta.png" alt="CITFLOW" class="nav-logo-img">
+      <span class="nav-logo-text"><span style="-webkit-text-fill-color:#fff;">cit</span>flow</span>
+    </div>
+    <a href="#solucao">Serviços</a>
+    <a href="#como-funciona">Como Funciona</a>
+    <a href="#resultados">Resultados</a>
+    <a href="#faq">FAQ</a>
+    <a href="https://wa.link/oev6u3" target="_blank" rel="noopener" class="btn btn-outline">Falar com Especialista</a>
+    <a href="https://wa.link/oev6u3" target="_blank" rel="noopener" class="btn btn-primary">Agendar Diagnóstico Gratuito</a>
+  </div>
+
+  <!-- ══════════════════════ HERO ══════════════════════ -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="container">
+      <div class="hero-inner">
+        <div class="hero-content">
+          <div class="hero-badge">DevOps as a Service · Exclusivo para empresas de Tecnologia e Startups</div>
+          <h1 class="hero-title">
+            Somos o talento raro<br>
+            que sua empresa precisa.<br>
+            <em>Sem precisar contratar.</em>
+          </h1>
+          <p class="hero-sub">
+            Você não precisa perder tempo selecionando o profissional "ideal",
+            fazer altos investimentos ou gerenciar uma equipe complexa.
+            O CITFLOW terceiriza toda a sua operação DevOps — e permite que
+            a tecnologia seja um acelerador, não um gargalo.
+          </p>
+          <div class="hero-ctas">
+            <a href="https://wa.link/oev6u3" target="_blank" rel="noopener" class="btn btn-primary btn-lg">
+              Agendar Diagnóstico Gratuito
+            </a>
+            <a href="https://wa.link/oev6u3" target="_blank" rel="noopener" class="btn btn-outline btn-lg">
+              Falar com um Especialista →
+            </a>
+          </div>
+          <div class="hero-metrics">
+            <div class="hero-metric">
+              <div class="hero-metric-value" data-target="900" data-suffix="+">0+</div>
+              <div class="hero-metric-label">Projetos realizados pela CIT Tecnologia</div>
+            </div>
+            <div class="hero-metric">
+              <div class="hero-metric-value" data-target="40" data-prefix="-" data-suffix="%">-0%</div>
+              <div class="hero-metric-label">Redução média em custos cloud</div>
+            </div>
+            <div class="hero-metric">
+              <div class="hero-metric-value" style="-webkit-text-fill-color: transparent; background: var(--grad); -webkit-background-clip: text; background-clip: text; font-size:1.1rem;">Multi‑Cloud</div>
+              <div class="hero-metric-label">AWS · Azure · GCP · Oracle</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-terminal">
+          <div class="terminal-header">
+            <div class="terminal-dot"></div>
+            <div class="terminal-dot"></div>
+            <div class="terminal-dot"></div>
+            <span class="terminal-title">citflow — pipeline.yml</span>
+          </div>
+          <div class="terminal-body" id="terminal-body">
+            <div class="t-line"><span class="t-step">$ citflow deploy --env production</span></div>
+            <div class="t-line" style="margin-top:10px;"><span class="t-wait t-label">▶ Iniciando pipeline...</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════ LOGOS STRIP ══════════════════════ -->
+  <div id="logos-strip">
+    <div class="logos-label">Tecnologias que dominamos</div>
+    <div class="marquee-track">
+      <div class="marquee-inner" id="marquee">
+        <span class="logo-item"><svg class="logo-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M10 0C4.48 0 0 4.48 0 10s4.48 10 10 10 10-4.48 10-10S15.52 0 10 0z" opacity=".3"/><path d="M10 2C5.58 2 2 5.58 2 10s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8z"/></svg> AWS</span>
+        <span class="logo-item"><svg class="logo-icon" viewBox="0 0 20 20" fill="currentColor"><rect width="20" height="20" rx="4" opacity=".3"/><rect x="3" y="3" width="14" height="14" rx="2"/></svg> Azure</span>
+        <span class="logo-item">☁ GCP</span>
+        <span class="logo-item">🔶 Oracle Cloud</span>
+        <span class="logo-item">⚙ Kubernetes</span>
+        <span class="logo-item">🔷 Terraform</span>
+        <span class="logo-item">⚡ GitHub Actions</span>
+        <span class="logo-item">🦊 GitLab CI/CD</span>
+        <span class="logo-item">🔧 Jenkins</span>
+        <span class="logo-item">📊 Prometheus</span>
+        <span class="logo-item">📈 Grafana</span>
+        <span class="logo-item">🐕 Datadog</span>
+        <span class="logo-item">🐳 Docker</span>
+        <span class="logo-item">🔐 Vault</span>
+        <span class="logo-item">🌀 ArgoCD</span>
+        <span class="logo-item">🌐 OVH Cloud</span>
+        <span class="logo-item">🔵 Alibaba Cloud</span>
+        <span class="logo-item">🔍 OpenTelemetry</span>
+        <!-- duplicate for seamless loop -->
+        <span class="logo-item"><svg class="logo-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M10 0C4.48 0 0 4.48 0 10s4.48 10 10 10 10-4.48 10-10S15.52 0 10 0z" opacity=".3"/><path d="M10 2C5.58 2 2 5.58 2 10s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8z"/></svg> AWS</span>
+        <span class="logo-item">☁ Azure</span>
+        <span class="logo-item">☁ GCP</span>
+        <span class="logo-item">🔶 Oracle Cloud</span>
+        <span class="logo-item">⚙ Kubernetes</span>
+        <span class="logo-item">🔷 Terraform</span>
+        <span class="logo-item">⚡ GitHub Actions</span>
+        <span class="logo-item">🦊 GitLab CI/CD</span>
+        <span class="logo-item">🔧 Jenkins</span>
+        <span class="logo-item">📊 Prometheus</span>
+        <span class="logo-item">📈 Grafana</span>
+        <span class="logo-item">🐕 Datadog</span>
+        <span class="logo-item">🐳 Docker</span>
+        <span class="logo-item">🔐 Vault</span>
+        <span class="logo-item">🌀 ArgoCD</span>
+        <span class="logo-item">🌐 OVH Cloud</span>
+        <span class="logo-item">🔵 Alibaba Cloud</span>
+        <span class="logo-item">🔍 OpenTelemetry</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════ PROBLEMA ══════════════════════ -->
+  <section id="problema">
+    <div class="container">
+      <div class="problema-hook animate-on-scroll">
+        <div class="section-badge">O Problema</div>
+        <h2>Sua equipe está criando software<br>ou apagando incêndios?</h2>
+        <p>Enquanto seu time deveria estar construindo funcionalidades e gerando valor para clientes, a realidade costuma ser bem diferente. Veja se isso soa familiar:</p>
+      </div>
+      <div class="pain-grid">
+        <div class="pain-card animate-on-scroll stagger-1">
+          <div class="pain-icon">🚨</div>
+          <h3>Deploys que travam o negócio</h3>
+          <p>Cada release vira um evento estressante. Rollbacks manuais, janelas de manutenção absurdas e engenheiros acordados às 2h da manhã não são sinais de crescimento — são sinais de alerta.</p>
+        </div>
+        <div class="pain-card animate-on-scroll stagger-2">
+          <div class="pain-icon">💥</div>
+          <h3>Ambientes inconsistentes</h3>
+          <p>Config drift, variáveis divergentes, containers que "funcionam na minha máquina". Sem IaC e práticas DevOps maduras, a inconsistência entre ambientes vira custo invisível.</p>
+        </div>
+        <div class="pain-card animate-on-scroll stagger-3">
+          <div class="pain-icon">💸</div>
+          <h3>Fatura cloud crescendo sem controle</h3>
+          <p>Recursos ociosos, instâncias superdimensionadas, transferência de dados esquecida. Sem governança, 30–40% do gasto em infra é literalmente desperdício.</p>
+        </div>
+        <div class="pain-card animate-on-scroll stagger-4">
+          <div class="pain-icon">🌑</div>
+          <h3>Você opera no escuro</h3>
+          <p>Sem métricas, logs centralizados e alertas inteligentes, você reage a incidentes em vez de preveni-los. MTTR alto, SLA comprometido, cliente insatisfeito.</p>
+        </div>
+        <div class="pain-card animate-on-scroll stagger-5">
+          <div class="pain-icon">🔑</div>
+          <h3>Bus factor = 1 em infraestrutura</h3>
+          <p>Toda a arquitetura vive na cabeça de uma pessoa. Férias, demissão ou burnout desse profissional coloca a operação inteira em risco. Isso não é operação — é vulnerabilidade.</p>
+        </div>
+        <div class="pain-card animate-on-scroll stagger-6">
+          <div class="pain-icon">😤</div>
+          <h3>Devs viraram sysadmins</h3>
+          <p>Quando não há especialista DevOps, os developers absorvem a responsabilidade de infra. O produto para de evoluir, o time perde foco e a cultura de entrega se deteriora.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════════════ CONSEQUÊNCIAS ══════════════════════ -->
+  <section id="consequencias">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <div class="section-badge">O Custo Invisível</div>
+        <h2>O que está em jogo quando a infra<br>não acompanha o crescimento</h2>
+        <p>A falta de DevOps estruturado não é apenas um problema técnico. É um problema de negócio.</p>
+      </div>
+      <div class="consequencias-grid">
+        <div class="consequencia-item animate-on-scroll stagger-1">
+          <span class="consequencia-icon">💰</span>
+          <h3>Perda de Receita</h3>
+          <p>Cada hora de instabilidade em produção custa entre R$5k–R$50k dependendo do seu MRR.</p>
+        </div>
+        <div class="consequencia-item animate-on-scroll stagger-2">
+          <span class="consequencia-icon">⏱</span>
+          <h3>Releases Atrasam</h3>
+          <p>Um ciclo de release que escorrega semanas gera atraso competitivo irreversível.</p>
+        </div>
+        <div class="consequencia-item animate-on-scroll stagger-3">
+          <span class="consequencia-icon">🔁</span>
+          <h3>Retrabalho Técnico</h3>
+          <p>30–40% do tempo do time indo para infra em vez de produto. Custo escondido na folha.</p>
+        </div>
+        <div class="consequencia-item animate-on-scroll stagger-4">
+          <span class="consequencia-icon">⚠️</span>
+          <h3>Risco Operacional</h3>
+          <p>Incidentes em produção sem runbook, sem oncall, sem post-mortem. É questão de quando.</p>
+        </div>
+        <div class="consequencia-item animate-on-scroll stagger-5">
+          <span class="consequencia-icon">📉</span>
+          <h3>Escala Limitada</h3>
+          <p>Você trava no mesmo patamar de sempre. A infra não acompanha o crescimento do produto.</p>
+        </div>
+      </div>
+      <div class="consequencias-quote animate-on-scroll">
+        "A infraestrutura não resolvida hoje é a crise de amanhã.<br>
+        E crises custam caro — em dinheiro, em talento e em reputação."
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════════════ SOLUÇÃO ══════════════════════ -->
+  <section id="solucao">
+    <div class="container">
+      <div class="solucao-intro">
+        <div class="solucao-intro-content animate-on-scroll">
+          <div class="section-badge">A Solução</div>
+          <h2>DevOps as a Service.<br>Uma extensão do seu time,<br>não um fornecedor.</h2>
+          <p>O CITFLOW é o modelo que permite às empresas terceirizarem suas práticas, ferramentas e infraestrutura de DevOps. Atuamos como uma ponte entre desenvolvimento e operações, centralizando a visibilidade de todo o ciclo de vida do software.</p>
+          <p>Não entregamos relatório e sumimos. Ficamos. Operamos. E somos responsáveis pelos resultados — não apenas pelas recomendações.</p>
+          <ul class="solucao-checks">
+            <li>Cloud Architecture multi-cloud (AWS, Azure, GCP, Oracle)</li>
+            <li>CI/CD e automação de pipelines</li>
+            <li>DevSecOps — segurança desde o primeiro commit</li>
+            <li>Site Reliability Engineering (SRE)</li>
+            <li>FinOps — governança e redução de custos cloud</li>
+            <li>Observabilidade: métricas, logs, traces e alertas</li>
+            <li>Kubernetes, Terraform e Infraestrutura como Código</li>
+          </ul>
+        </div>
+        <div class="animate-on-scroll stagger-2">
+          <div class="solucao-diff">
+            <h3>Por que somos diferentes</h3>
+            <p>Consultorias tradicionais entregam diagnóstico e recomendações. Nós executamos e operamos. Ficamos responsáveis pelos resultados — não apenas pelas sugestões.</p>
+            <p>É a diferença entre receber um mapa e ter um piloto experiente ao seu lado, todos os dias.</p>
+            <p style="margin-bottom:0; color: var(--text-3); font-size:0.85rem; font-style:italic;">Apoiado por +25 anos de operações da CIT Tecnologia com mais de 900 projetos entregues.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-header animate-on-scroll" style="margin-bottom:48px;">
+        <h2 style="font-size:1.5rem;">Nosso framework de operação</h2>
+      </div>
+      <div class="pipeline">
+        <div class="pipeline-step animate-on-scroll stagger-1">
+          <div class="pipeline-num">01</div>
+          <h3>Diagnóstico</h3>
+          <p>Mapeamos infraestrutura, gaps e prioridades com profundidade técnica real.</p>
+        </div>
+        <div class="pipeline-step animate-on-scroll stagger-2">
+          <div class="pipeline-num">02</div>
+          <h3>Estruturação</h3>
+          <p>Desenhamos a arquitetura target com roadmap detalhado e ROI estimado.</p>
+        </div>
+        <div class="pipeline-step animate-on-scroll stagger-3">
+          <div class="pipeline-num">03</div>
+          <h3>Automação</h3>
+          <p>Implementamos CI/CD, IaC, pipelines e segurança DevSecOps.</p>
+        </div>
+        <div class="pipeline-step animate-on-scroll stagger-4">
+          <div class="pipeline-num">04</div>
+          <h3>Observabilidade</h3>
+          <p>Dashboards, alertas, SLOs e oncall 24/7 com resposta a incidentes.</p>
+        </div>
+        <div class="pipeline-step animate-on-scroll stagger-5">
+          <div class="pipeline-num">05</div>
+          <h3>Evolução</h3>
+          <p>Revisões mensais de FinOps, arquitetura e adoção de novas práticas.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════════════ COMO FUNCIONA ══════════════════════ -->
+  <section id="como-funciona">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <div class="section-badge">Processo</div>
+        <h2>Do contrato à produção estabilizada.<br>Um processo sem surpresas.</h2>
+        <p>Cada etapa tem entregáveis definidos, SLAs claros e visibilidade total para o seu time.</p>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item animate-on-scroll">
+          <div class="timeline-left">
+            <div class="timeline-circle">01</div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <span class="timeline-tag">Semana 1–2</span>
+            <h3>Assessment</h3>
+            <p>Auditoria completa da infraestrutura atual: repositórios, pipelines, ambientes, custos cloud dos últimos 3 meses e maturidade DevOps. Entrevistas com o time técnico para entender contexto real.</p>
+            <ul class="timeline-deliverables">
+              <li>Relatório de maturidade DevOps com score quantificado</li>
+              <li>Matriz de riscos e prioridades críticas</li>
+              <li>Quick wins identificados para ganho imediato</li>
+            </ul>
+          </div>
+        </div>
+        <div class="timeline-item animate-on-scroll">
+          <div class="timeline-left">
+            <div class="timeline-circle">02</div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <span class="timeline-tag">Semana 2–3</span>
+            <h3>Plano de Evolução</h3>
+            <p>Definição da arquitetura target, seleção e validação do stack tecnológico, roadmap com milestones e KPIs. Estimativa de ROI e payback documentados antes de qualquer implementação.</p>
+            <ul class="timeline-deliverables">
+              <li>Documento de arquitetura target revisado e aprovado</li>
+              <li>Roadmap priorizado com milestones claros</li>
+              <li>SLAs contratuais definidos</li>
+            </ul>
+          </div>
+        </div>
+        <div class="timeline-item animate-on-scroll">
+          <div class="timeline-left">
+            <div class="timeline-circle">03</div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <span class="timeline-tag">Semanas 4–12</span>
+            <h3>Implementação</h3>
+            <p>Execução: CI/CD pipelines, Infraestrutura como Código com Terraform, containerização com Kubernetes, DevSecOps integrado (SAST, DAST, secrets management) e ambientes padronizados.</p>
+            <ul class="timeline-deliverables">
+              <li>Pipelines CI/CD funcionando e documentados</li>
+              <li>IaC versionado no repositório do cliente</li>
+              <li>Ambientes dev/staging/prod reprodutíveis e estáveis</li>
+            </ul>
+          </div>
+        </div>
+        <div class="timeline-item animate-on-scroll">
+          <div class="timeline-left">
+            <div class="timeline-circle">04</div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <span class="timeline-tag">Ongoing</span>
+            <h3>Operação Contínua</h3>
+            <p>Monitoramento 24/7 com stack de observabilidade completa, oncall estruturado, incident response, runbooks e post-mortems. Canal dedicado no Slack/Teams do cliente.</p>
+            <ul class="timeline-deliverables">
+              <li>Dashboard executivo em tempo real</li>
+              <li>Relatório mensal de operações e SLA</li>
+              <li>Reunião semanal de status com o time</li>
+            </ul>
+          </div>
+        </div>
+        <div class="timeline-item animate-on-scroll">
+          <div class="timeline-left">
+            <div class="timeline-circle">05</div>
+          </div>
+          <div class="timeline-content" style="padding-bottom:0;">
+            <span class="timeline-tag">Mensal</span>
+            <h3>Otimização Contínua</h3>
+            <p>Revisões mensais de FinOps e rightsizing, evolução da arquitetura conforme crescimento do produto, adoção de novas ferramentas e práticas de mercado.</p>
+            <ul class="timeline-deliverables">
+              <li>Relatório de otimização de custos cloud</li>
+              <li>Roadmap atualizado com novas oportunidades</li>
+              <li>Benchmark de mercado e melhores práticas</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════════════ BENEFÍCIOS ══════════════════════ -->
+  <section id="beneficios">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <div class="section-badge">Benefícios</div>
+        <h2>Tecnologia como acelerador.<br>Não como gargalo.</h2>
+        <p>Cada benefício com impacto mensurável. Sem promessas vagas, sem overhead de contratação.</p>
+      </div>
+      <div class="benefits-grid">
+        <div class="benefit-card animate-on-scroll stagger-1">
+          <div class="benefit-icon">⚡</div>
+          <div class="benefit-metric">↓ 80% no tempo de deploy</div>
+          <h3>Agilidade e Time-to-Market</h3>
+          <p><strong style="color:var(--text-1);font-weight:600;">Implantação imediata:</strong> diferente de um time interno que pode levar meses, temos stacks pré-configuradas — CI/CD, Terraform, Kubernetes — prontas para uso.</p>
+          <p style="margin-top:10px;"><strong style="color:var(--text-1);font-weight:600;">Foco no core business:</strong> seus developers param de apagar incêndios na infra e focam 100% na criação de funcionalidades e inovação.</p>
+        </div>
+        <div class="benefit-card animate-on-scroll stagger-2">
+          <div class="benefit-icon">💰</div>
+          <div class="benefit-metric">↓ 40% em custos cloud + sem encargos</div>
+          <h3>Eficiência de Custos e Escalabilidade</h3>
+          <p><strong style="color:var(--text-1);font-weight:600;">Redução de overhead:</strong> elimina custos com recrutamento, treinamento e encargos de SREs e arquitetos cloud, que possuem salários elevados no mercado.</p>
+          <p style="margin-top:10px;"><strong style="color:var(--text-1);font-weight:600;">Modelo previsível:</strong> você paga pelo que utiliza, com previsibilidade orçamentária e escala conforme a demanda — sem barreira de novas contratações.</p>
+        </div>
+        <div class="benefit-card animate-on-scroll stagger-3">
+          <div class="benefit-icon">🧠</div>
+          <div class="benefit-metric">Especialistas em AWS, Oracle, Azure, GCP</div>
+          <h3>Expertise Técnica e Qualidade</h3>
+          <p><strong style="color:var(--text-1);font-weight:600;">Acesso a especialistas:</strong> você não depende do conhecimento de apenas 1 ou 2 engenheiros. Oferecemos um ecossistema completo de especialistas em diversas nuvens e ferramentas.</p>
+          <p style="margin-top:10px;"><strong style="color:var(--text-1);font-weight:600;">Padronização:</strong> processos testados e validados em múltiplos clientes, reduzindo drasticamente o erro humano e o "trabalho artesanal" em scripts de automação.</p>
+        </div>
+        <div class="benefit-card animate-on-scroll stagger-4">
+          <div class="benefit-icon">🔒</div>
+          <div class="benefit-metric">Security as Code · 0 surpresas de auditoria</div>
+          <h3>Segurança e Monitoramento (DevSecOps)</h3>
+          <p><strong style="color:var(--text-1);font-weight:600;">Segurança nativa:</strong> práticas de Security as Code e escaneamento automatizado de vulnerabilidades são integradas diretamente no pipeline de entrega, desde o primeiro commit.</p>
+          <p style="margin-top:10px;"><strong style="color:var(--text-1);font-weight:600;">Monitoramento 24/7:</strong> enquanto times pequenos dificilmente mantêm plantões, o DaaS oferece resposta a incidentes ininterrupta e maior disponibilidade garantida.</p>
+        </div>
+        <div class="benefit-card animate-on-scroll stagger-5">
+          <div class="benefit-icon">✅</div>
+          <div class="benefit-metric">99.9% uptime target</div>
+          <h3>Maior Confiabilidade Operacional</h3>
+          <p>SLOs definidos. Runbooks prontos. Oncall organizado. Incidentes resolvidos em minutos — não em horas — com MTTR medido, reduzido e reportado mensalmente.</p>
+        </div>
+        <div class="benefit-card animate-on-scroll stagger-6">
+          <div class="benefit-icon">🏛</div>
+          <div class="benefit-metric">100% auditável e rastreável</div>
+          <h3>Governança Cloud</h3>
+          <p>Políticas, IAM, tagging e cost allocation estruturados. Visibilidade total sobre quem usa o quê e por quê. Compliance incorporado ao processo, não adicionado como correção tardia.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════════════ STACK ══════════════════════ -->
+  <section id="stack">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <div class="section-badge">Stack</div>
+        <h2>Certificações reais. Projetos reais.<br>Sem curva de aprendizado.</h2>
+        <p>Dominamos as ferramentas que as melhores empresas de tecnologia do mundo utilizam.</p>
+      </div>
+      <div class="stack-categories">
+        <div class="animate-on-scroll">
+          <div class="stack-category-label">☁ Cloud Providers</div>
+          <div class="stack-logos">
+            <div class="stack-logo-pill"><span class="stack-logo-icon">🟠</span> Amazon Web Services</div>
+            <div class="stack-logo-pill"><span class="stack-logo-icon">🔵</span> Microsoft Azure</div>
+            <div class="stack-logo-pill"><span class="stack-logo-icon">🔴</span> Google Cloud Platform</div>
+            <div class="stack-logo-pill"><span class="stack-logo-icon">🔶</span> Oracle Cloud</div>
+            <div class="stack-logo-pill"><span class="stack-logo-icon">🌐</span> OVH Cloud</div>
+            <div class="stack-logo-pill"><span class="stack-logo-icon">🔵</span> Alibaba Cloud</div>
+          </div>
+        </div>
+        <div class="animate-on-scroll stagger-1">
+          <div class="stack-category-label">⚙ Orquestração & IaC</div>
+          <div class="stack-logos">
+            <div class="stack-logo-pill"><span class="stack-logo-icon">⚙</span> Kubernetes</div>
+            <div class="stack-logo-pill"><span class="stack-logo-icon">🔷</span> Terraform</div>
+            <div class="stack-logo-pill"><span class="stack-logo-icon">⛵</span> Helm</div>
+            <div class="stack-logo-pill"><span class="stack-logo-icon">🔄</span> ArgoCD</div>
+            <div class="stack-logo-pill"><span class="stack-logo-icon">🐳</span> Docker</div>
+          </div>
+        </div>
+        <div class="animate-on-scroll stagger-2">
+          <div class="stack-category-label">🚀 CI/CD</div>
+          <div class="stack-logos">
+            <div class="stack-logo-pill"><span class="stack-logo-icon">⚡</span> GitHub Actions</div>
+            <div class="stack-logo-pill"><span class="stack-logo-icon">🦊</span> GitLab CI/CD</div>
+            <div class="stack-logo-pill"><span class="stack-logo-icon">🔧</span> Jenkins</div>
+            <div class="stack-logo-pill"><span class="stack-logo-icon">🔵</span> Azure DevOps</div>
+            <div class="stack-logo-pill"><span class="stack-logo-icon">🌊</span> Harness</div>
+          </div>
+        </div>
+        <div class="animate-on-scroll stagger-3">
+          <div class="stack-category-label">📊 Observabilidade</div>
+          <div class="stack-logos">
+            <div class="stack-logo-pill"><span class="stack-logo-icon">📊</span> Prometheus</div>
+            <div class="stack-logo-pill"><span class="stack-logo-icon">📈</span> Grafana</div>
+            <div class="stack-logo-pill"><span class="stack-logo-icon">🐕</span> Datadog</div>
+            <div class="stack-logo-pill"><span class="stack-logo-icon">🔍</span> OpenTelemetry</div>
+            <div class="stack-logo-pill"><span class="stack-logo-icon">📡</span> New Relic</div>
+          </div>
+        </div>
+        <div class="animate-on-scroll stagger-4">
+          <div class="stack-category-label">🔐 Segurança</div>
+          <div class="stack-logos">
+            <div class="stack-logo-pill"><span class="stack-logo-icon">🔐</span> HashiCorp Vault</div>
+            <div class="stack-logo-pill"><span class="stack-logo-icon">🛡</span> Trivy</div>
+            <div class="stack-logo-pill"><span class="stack-logo-icon">📋</span> SonarQube</div>
+            <div class="stack-logo-pill"><span class="stack-logo-icon">🔑</span> AWS IAM / Azure AD</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════════════ COMPARATIVO ══════════════════════ -->
+  <section id="comparativo">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <div class="section-badge">Comparativo</div>
+        <h2>Por que empresas escolhem DaaS<br>em vez de montar time próprio.</h2>
+        <p>A análise honesta que todo CTO deveria fazer antes de contratar qualquer solução DevOps.</p>
+      </div>
+      <div class="table-wrapper animate-on-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Critério</th>
+              <th>Equipe Interna</th>
+              <th>Freelancer</th>
+              <th>Consultoria Trad.</th>
+              <th class="th-citflow">✦ CITFLOW DaaS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Velocidade de implantação</td>
+              <td>3–6 meses</td>
+              <td>Ramp-up lento</td>
+              <td>2–4 meses</td>
+              <td class="td-citflow">2–4 semanas ✦</td>
+            </tr>
+            <tr>
+              <td>Custo mensal estimado</td>
+              <td>R$25k–50k + encargos</td>
+              <td>R$15k–35k (instável)</td>
+              <td>Projeto único caro</td>
+              <td class="td-citflow">Previsível e menor ✦</td>
+            </tr>
+            <tr>
+              <td>Especialistas multi-cloud</td>
+              <td><span class="check-no">✗</span> 1–2 perfis</td>
+              <td><span class="check-no">✗</span> 1 perfil</td>
+              <td><span class="check-warn">~</span> Parcial</td>
+              <td class="td-citflow"><span class="check-yes">✓</span> Time completo</td>
+            </tr>
+            <tr>
+              <td>Operação contínua 24/7</td>
+              <td><span class="check-warn">~</span> Depende</td>
+              <td><span class="check-no">✗</span> Sem SLA</td>
+              <td><span class="check-no">✗</span> Projeto encerra</td>
+              <td class="td-citflow"><span class="check-yes">✓</span> SLA contratual</td>
+            </tr>
+            <tr>
+              <td>Escalabilidade do time</td>
+              <td><span class="check-no">✗</span> Recontrata</td>
+              <td><span class="check-no">✗</span> Recontrata</td>
+              <td><span class="check-warn">~</span> Escopo fixo</td>
+              <td class="td-citflow"><span class="check-yes">✓</span> Sob demanda</td>
+            </tr>
+            <tr>
+              <td>Previsibilidade financeira</td>
+              <td><span class="check-no">✗</span> Varia</td>
+              <td><span class="check-no">✗</span> Instável</td>
+              <td><span class="check-warn">~</span> Por projeto</td>
+              <td class="td-citflow"><span class="check-yes">✓</span> Mensalidade fixa</td>
+            </tr>
+            <tr>
+              <td>DevOps + SRE + FinOps</td>
+              <td><span class="check-no">✗</span> Não incluso</td>
+              <td><span class="check-no">✗</span> Não incluso</td>
+              <td><span class="check-warn">~</span> Parcial</td>
+              <td class="td-citflow"><span class="check-yes">✓</span> Tudo incluso</td>
+            </tr>
+            <tr>
+              <td>Risco operacional</td>
+              <td><span class="check-no">✗</span> Alto — bus factor</td>
+              <td><span class="check-no">✗</span> Muito alto</td>
+              <td><span class="check-warn">~</span> Médio</td>
+              <td class="td-citflow"><span class="check-yes">✓</span> Baixo — time + SLA</td>
+            </tr>
+            <tr>
+              <td>Modelo de contratação</td>
+              <td>CLT + encargos fixos</td>
+              <td>PJ variável</td>
+              <td>Projeto único</td>
+              <td class="td-citflow"><span class="check-yes">✓</span> Pay-as-you-go</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════════════ RESULTADOS ══════════════════════ -->
+  <section id="resultados">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <div class="section-badge">Resultados</div>
+        <h2>Números reais.<br>Times reais.</h2>
+        <p>Mais de 900 projetos entregues pela CIT Tecnologia. Esses são os resultados que o CITFLOW gera.</p>
+      </div>
+      <div class="metrics-row">
+        <div class="metric-card animate-on-scroll stagger-1">
+          <div class="metric-number" data-target="40" data-prefix="-" data-suffix="%">-0%</div>
+          <div class="metric-label">Redução média em custos de infraestrutura cloud</div>
+        </div>
+        <div class="metric-card animate-on-scroll stagger-2">
+          <div class="metric-number" data-target="80" data-prefix="-" data-suffix="%">-0%</div>
+          <div class="metric-label">Redução no tempo de ciclo de deploy</div>
+        </div>
+        <div class="metric-card animate-on-scroll stagger-3">
+          <div class="metric-number" data-target="99.9" data-suffix="%">0%</div>
+          <div class="metric-label">Uptime target com SLA contratual</div>
+        </div>
+        <div class="metric-card animate-on-scroll stagger-4">
+          <div class="metric-number" data-target="900" data-suffix="+">0+</div>
+          <div class="metric-label">Projetos entregues pela CIT Tecnologia</div>
+        </div>
+      </div>
+      <div class="cases-grid">
+        <div class="case-card animate-on-scroll stagger-1">
+          <div>
+            <div class="case-logo">🏢 SaaS B2B · Fintech</div>
+            <div class="case-tag" style="margin-top:10px;">Empresa de Pagamentos · 30 devs</div>
+          </div>
+          <p class="case-quote">"Reduzimos o tempo de deploy de 3 dias para 4 horas. Nossa equipe voltou a focar no que importa: o produto. O CITFLOW é literalmente uma extensão do nosso time de engenharia."</p>
+          <div class="case-author">— CTO, Empresa de Pagamentos B2B</div>
+          <div class="case-metrics">
+            <div class="case-metric"><div class="case-metric-dot"></div>78% de redução no tempo de deploy</div>
+            <div class="case-metric"><div class="case-metric-dot"></div>35% de redução em custos cloud</div>
+            <div class="case-metric"><div class="case-metric-dot"></div>+2 releases por semana</div>
+          </div>
+        </div>
+        <div class="case-card animate-on-scroll stagger-2">
+          <div>
+            <div class="case-logo">🏢 Software House · 50 devs</div>
+            <div class="case-tag" style="margin-top:10px;">Projetos para múltiplos clientes</div>
+          </div>
+          <p class="case-quote">"Passamos a entregar projetos com infraestrutura padronizada desde o dia 1. O CITFLOW virou parte do nosso processo de onboarding de clientes. Virou diferencial competitivo."</p>
+          <div class="case-author">— Head de Engenharia, Software House</div>
+          <div class="case-metrics">
+            <div class="case-metric"><div class="case-metric-dot"></div>100% dos projetos com IaC</div>
+            <div class="case-metric"><div class="case-metric-dot"></div>Zero incidentes de segurança</div>
+            <div class="case-metric"><div class="case-metric-dot"></div>NPS de entrega +40 pontos</div>
+          </div>
+        </div>
+        <div class="case-card animate-on-scroll stagger-3">
+          <div>
+            <div class="case-logo">🏢 Startup · Healthtech</div>
+            <div class="case-tag" style="margin-top:10px;">Série A · 15 engenheiros</div>
+          </div>
+          <p class="case-quote">"Conseguimos passar por uma auditoria SOC2 com toda a infraestrutura já preparada. Em 8 semanas. Isso seria impossível sem o CITFLOW. Fechamos nossa Série A com confiança total."</p>
+          <div class="case-author">— Founder & CTO, Healthtech</div>
+          <div class="case-metrics">
+            <div class="case-metric"><div class="case-metric-dot"></div>SOC2 pronto em 8 semanas</div>
+            <div class="case-metric"><div class="case-metric-dot"></div>R$180k/ano economizados em infra</div>
+            <div class="case-metric"><div class="case-metric-dot"></div>Série A fechada com sucesso</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════════════ PARA QUEM ══════════════════════ -->
+  <section id="para-quem">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <div class="section-badge">Para Quem</div>
+        <h2>Feito para empresas que não podem<br>parar de evoluir.</h2>
+        <p>Se você usa cloud, tem um produto digital e quer crescer com segurança, o CITFLOW é para você.</p>
+      </div>
+      <div class="audience-grid">
+        <div class="audience-card animate-on-scroll stagger-1">
+          <span class="audience-icon">🚀</span>
+          <div>
+            <h3>Startups em Crescimento</h3>
+            <p>Estruture sua operação DevOps desde o início. Evite dívida técnica cara no futuro.</p>
+          </div>
+        </div>
+        <div class="audience-card animate-on-scroll stagger-2">
+          <span class="audience-icon">📦</span>
+          <div>
+            <h3>Empresas SaaS</h3>
+            <p>Acelere deploys, garanta disponibilidade e reduza o custo de operação da plataforma.</p>
+          </div>
+        </div>
+        <div class="audience-card animate-on-scroll stagger-3">
+          <span class="audience-icon">🏭</span>
+          <div>
+            <h3>Software Houses</h3>
+            <p>Entregue projetos com infraestrutura padronizada e segura como diferencial competitivo.</p>
+          </div>
+        </div>
+        <div class="audience-card animate-on-scroll stagger-4">
+          <span class="audience-icon">🎯</span>
+          <div>
+            <h3>Empresas de Produto Digital</h3>
+            <p>Libere seu time de engenharia para focar no produto. Deixe a infra conosco.</p>
+          </div>
+        </div>
+        <div class="audience-card animate-on-scroll stagger-5">
+          <span class="audience-icon">☁</span>
+          <div>
+            <h3>Times que já usam Cloud</h3>
+            <p>Otimize custos, consolide governança e evolua sua maturidade DevOps.</p>
+          </div>
+        </div>
+        <div class="audience-card animate-on-scroll stagger-6">
+          <span class="audience-icon">📊</span>
+          <div>
+            <h3>Empresas buscando escala</h3>
+            <p>Prepare a infraestrutura para suportar crescimento de 10x sem refatoração emergencial.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════════════ FAQ ══════════════════════ -->
+  <section id="faq">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <div class="section-badge">FAQ</div>
+        <h2>Perguntas que CTOs nos fazem<br>antes de começar.</h2>
+      </div>
+      <div class="faq-grid">
+
+        <div class="faq-item animate-on-scroll">
+          <button class="faq-question">
+            O CITFLOW substitui minha equipe de tecnologia?
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div class="faq-answer"><p>Não. Atuamos como uma extensão especializada do seu time — não como substituto. Podemos ser o time principal de DevOps ou trabalhar lado a lado com quem você já tem, preenchendo gaps específicos. O modelo é adaptado à sua realidade e ao seu momento.</p></div>
+        </div>
+
+        <div class="faq-item animate-on-scroll">
+          <button class="faq-question">
+            Quanto tempo leva para ver os primeiros resultados?
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div class="faq-answer"><p>Quick wins aparecem nas primeiras 2–3 semanas: pipelines básicos funcionando, visibilidade de custos cloud e alertas configurados. Resultados estruturais — redução de custo, deploy automatizado e observabilidade completa — se estabilizam em 60–90 dias.</p></div>
+        </div>
+
+        <div class="faq-item animate-on-scroll">
+          <button class="faq-question">
+            Precisamos migrar toda a nossa infraestrutura?
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div class="faq-answer"><p>Não. Trabalhamos em cima do que existe, evoluindo progressivamente. Migrações são feitas quando há benefício real documentado — não por agenda do fornecedor. Respeitamos o que já funciona e melhoramos o que precisa.</p></div>
+        </div>
+
+        <div class="faq-item animate-on-scroll">
+          <button class="faq-question">
+            Vocês trabalham com qual cloud? Somos multi-cloud.
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div class="faq-answer"><p>Trabalhamos com AWS, Azure, GCP, Oracle Cloud e ambientes híbridos e multi-cloud. Temos certificações reais em todos os principais provedores e projetos entregues em cada um deles.</p></div>
+        </div>
+
+        <div class="faq-item animate-on-scroll">
+          <button class="faq-question">
+            Como funciona a segurança dos nossos dados e código?
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div class="faq-answer"><p>Assinamos NDA completo antes do assessment. O acesso ao código e infraestrutura é por princípio de least privilege, auditado e revogável a qualquer momento. Seguimos as práticas da ISO 27001 — certificação da CIT Tecnologia.</p></div>
+        </div>
+
+        <div class="faq-item animate-on-scroll">
+          <button class="faq-question">
+            Qual o custo do serviço CITFLOW?
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div class="faq-answer"><p>Depende do escopo e do seu stack atual. Nosso modelo começa com o Diagnóstico Gratuito — após esse assessment, fazemos uma proposta customizada com ROI estimado. Tipicamente representa 40–60% do custo total de contratar e manter um DevOps Sênior CLT, com muito mais cobertura.</p></div>
+        </div>
+
+        <div class="faq-item animate-on-scroll">
+          <button class="faq-question">
+            Vocês operam 24/7 ou é horário comercial?
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div class="faq-answer"><p>Operação contínua com plantão 24/7 está disponível nos planos com SLA de disponibilidade. Incidentes críticos têm resposta em até 15 minutos dependendo do tier contratado.</p></div>
+        </div>
+
+        <div class="faq-item animate-on-scroll">
+          <button class="faq-question">
+            Como fica o conhecimento? Ficamos dependentes de vocês?
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div class="faq-answer"><p>Toda a infraestrutura é documentada e versionada no repositório do cliente. Você tem acesso total a runbooks, dashboards e documentação durante toda a operação. Não criamos dependência — e se você quiser encerrar, entregamos tudo organizado.</p></div>
+        </div>
+
+        <div class="faq-item animate-on-scroll">
+          <button class="faq-question">
+            Vocês fazem FinOps e otimização de custos cloud?
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div class="faq-answer"><p>Sim. FinOps é parte central do nosso modelo. Revisamos custos mensalmente, identificamos recursos ociosos, aplicamos rightsizing e gerenciamos reservas. A redução média que geramos é de 40% nos custos de infraestrutura cloud.</p></div>
+        </div>
+
+        <div class="faq-item animate-on-scroll">
+          <button class="faq-question">
+            Implementam CI/CD, Kubernetes e Terraform?
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div class="faq-answer"><p>Sim, os três. E também GitHub Actions, GitLab CI, Jenkins, ArgoCD, Helm, e qualquer combinação que faça sentido para o seu stack. Somos pragmáticos na escolha de ferramentas — o objetivo é resultado, não dogma tecnológico.</p></div>
+        </div>
+
+        <div class="faq-item animate-on-scroll">
+          <button class="faq-question">
+            Atendem startups early-stage?
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div class="faq-answer"><p>Sim. Temos modelos específicos para startups que estão estruturando do zero. Investir em DevOps cedo evita dívida técnica cara no futuro. O custo de prevenir é uma fração do custo de remediar.</p></div>
+        </div>
+
+        <div class="faq-item animate-on-scroll">
+          <button class="faq-question">
+            Como lidam com conformidade como LGPD e SOC2?
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div class="faq-answer"><p>DevSecOps e compliance são parte central do modelo. Implementamos controles desde o início — não como camada adicional. Já apoiamos empresas em processos SOC2, ISO 27001 e adequação à LGPD, integrando requisitos diretamente na arquitetura e nos pipelines.</p></div>
+        </div>
+
+        <div class="faq-item animate-on-scroll">
+          <button class="faq-question">
+            Posso cancelar se não ficar satisfeito?
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div class="faq-answer"><p>Sim. Trabalhamos com contratos mensais renováveis após o período mínimo inicial. Como toda a infraestrutura é do cliente — documentada e versionada — você nunca fica refém de nós. Transparência total é um dos nossos princípios.</p></div>
+        </div>
+
+        <div class="faq-item animate-on-scroll">
+          <button class="faq-question">
+            Como é a comunicação durante a operação?
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div class="faq-answer"><p>Canal dedicado no Slack ou Teams do cliente, dashboard de observabilidade em tempo real, reunião semanal de status e relatório mensal executivo. Você tem visibilidade total sem precisar gerenciar o dia a dia operacional.</p></div>
+        </div>
+
+        <div class="faq-item animate-on-scroll">
+          <button class="faq-question">
+            O que é o Diagnóstico Gratuito e o que ele inclui?
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div class="faq-answer"><p>É uma sessão de 90 minutos + análise técnica posterior. Mapeamos: maturidade do seu DevOps atual, principais riscos operacionais, oportunidades de redução de custo e estimativa de ROI com o CITFLOW. Sem pitch de venda, sem pressão. Você sai com um diagnóstico real e acionável — independente de contratar ou não.</p></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════════════ CTA FINAL ══════════════════════ -->
+  <section id="cta-final">
+    <div class="container">
+      <div class="cta-final-inner animate-on-scroll">
+        <div class="section-badge" style="margin:0 auto 24px;">Próximo Passo</div>
+        <h2>Pronto para eliminar gargalos<br>e escalar sua operação?</h2>
+        <p>Permita que a tecnologia seja um acelerador — não um obstáculo. Reduza custos, acelere entregas e opere com especialistas sem precisar montar uma equipe inteira.</p>
+        <div class="cta-final-buttons">
+          <a href="https://wa.link/oev6u3" target="_blank" rel="noopener" class="btn btn-primary btn-lg" style="animation: pulse-glow 2.5s ease infinite;">
+            Agendar Diagnóstico Gratuito
+          </a>
+          <a href="https://wa.link/oev6u3" target="_blank" rel="noopener" class="btn btn-outline btn-lg">
+            Falar com um Especialista →
+          </a>
+        </div>
+        <div class="cta-trust">
+          <span class="cta-trust-item">Sem spam</span>
+          <span class="cta-trust-item">Agendamento imediato</span>
+          <span class="cta-trust-item">Sem custo ou compromisso</span>
+          <span class="cta-trust-item">Resposta em até 2h úteis</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════ FOOTER ══════════════════════ -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+            <img src="logo_solta.png" alt="CITFLOW" class="nav-logo-img">
+            <span class="nav-logo-text" style="font-size:1.3rem;"><span style="-webkit-text-fill-color:#fff;">cit</span>flow</span>
+          </div>
+          <div class="footer-brand-sub">by CIT Tecnologia</div>
+          <p>DevOps as a Service para empresas de tecnologia que precisam crescer sem criar gargalos operacionais.</p>
+          <div class="footer-social">
+            <a href="https://www.linkedin.com/company/cit-tecnologia" target="_blank" rel="noopener" title="LinkedIn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            </a>
+            <a href="https://wa.link/oev6u3" target="_blank" rel="noopener" title="WhatsApp">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Serviços</h4>
+          <ul>
+            <li><a href="#">CI/CD</a></li>
+            <li><a href="#">Kubernetes & IaC</a></li>
+            <li><a href="#">Cloud Architecture</a></li>
+            <li><a href="#">DevSecOps</a></li>
+            <li><a href="#">SRE & Observabilidade</a></li>
+            <li><a href="#">FinOps</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Empresa</h4>
+          <ul>
+            <li><a href="#">Sobre o CITFLOW</a></li>
+            <li><a href="https://cittecnologia.com.br" target="_blank" rel="noopener">CIT Tecnologia</a></li>
+            <li><a href="#">Cases</a></li>
+            <li><a href="#">Blog</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contato</h4>
+          <ul>
+            <li><a href="https://wa.link/oev6u3" target="_blank" rel="noopener">Agendar Diagnóstico</a></li>
+            <li><a href="https://wa.link/oev6u3" target="_blank" rel="noopener">WhatsApp</a></li>
+            <li><a href="https://privacidade.cittecnologia.com.br/" target="_blank" rel="noopener">Política de Privacidade</a></li>
+            <li><a href="https://policies.google.com/terms" target="_blank" rel="noopener">Termos de Uso</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 CIT Tecnologia. Todos os direitos reservados.</span>
+        <span>CITFLOW — DevOps as a Service</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ══════════════════════ JAVASCRIPT ══════════════════════ -->
+  <script>
+    // ─── Navbar scroll ────────────────────────────────────────
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    // ─── Mobile menu ──────────────────────────────────────────
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobile-menu');
+    hamburger.addEventListener('click', () => {
+      mobileMenu.classList.toggle('open');
+    });
+    mobileMenu.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => mobileMenu.classList.remove('open'));
+    });
+
+    // ─── Scroll animations ────────────────────────────────────
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+
+    // ─── Counter animation ────────────────────────────────────
+    function animateCounter(el) {
+      const target = parseFloat(el.dataset.target);
+      const prefix = el.dataset.prefix || '';
+      const suffix = el.dataset.suffix || '';
+      const isDecimal = target % 1 !== 0;
+      const duration = 1800;
+      const start = performance.now();
+
+      function update(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const ease = 1 - Math.pow(1 - progress, 3);
+        const current = isDecimal
+          ? (target * ease).toFixed(1)
+          : Math.floor(target * ease);
+        el.textContent = prefix + current + suffix;
+        if (progress < 1) requestAnimationFrame(update);
+      }
+      requestAnimationFrame(update);
+    }
+
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting && e.target.dataset.target) {
+          animateCounter(e.target);
+          counterObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    document.querySelectorAll('[data-target]').forEach(el => counterObserver.observe(el));
+
+    // ─── FAQ accordion ────────────────────────────────────────
+    document.querySelectorAll('.faq-question').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.closest('.faq-item');
+        const isOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+        if (!isOpen) item.classList.add('open');
+      });
+    });
+
+    // ─── Terminal animation ───────────────────────────────────
+    const terminalBody = document.getElementById('terminal-body');
+    const steps = [
+      { icon: '✓', cls: 't-check', label: 'build:frontend', time: '2.3s' },
+      { icon: '✓', cls: 't-check', label: 'test:unit', time: '8.1s' },
+      { icon: '✓', cls: 't-check', label: 'security:scan', time: '4.7s' },
+      { icon: '✓', cls: 't-check', label: 'terraform:plan', time: '3.2s' },
+      { icon: '✓', cls: 't-check', label: 'docker:build', time: '12.4s' },
+      { icon: '▶', cls: 't-run',   label: 'deploy:production', time: 'running...' },
+    ];
+
+    let stepIdx = 0;
+    function addTerminalLine() {
+      if (stepIdx >= steps.length) {
+        setTimeout(() => {
+          terminalBody.innerHTML = '<div class="t-line"><span class="t-step">$ citflow deploy --env production</span></div><div class="t-line" style="margin-top:10px;"><span class="t-wait t-label">▶ Iniciando pipeline...</span></div>';
+          stepIdx = 0;
+          setTimeout(addTerminalLine, 800);
+        }, 3000);
+        return;
+      }
+      const s = steps[stepIdx++];
+      const line = document.createElement('div');
+      line.className = 't-line';
+      line.innerHTML = `<span class="${s.cls}">${s.icon}</span><span class="t-label">${s.label}</span><span class="t-time">${s.time}</span>`;
+      terminalBody.appendChild(line);
+      terminalBody.scrollTop = terminalBody.scrollHeight;
+      const delay = stepIdx < steps.length ? 600 + Math.random() * 400 : 800;
+      setTimeout(addTerminalLine, delay);
+    }
+    setTimeout(addTerminalLine, 1200);
+
+    // ─── Smooth scroll for anchor links ──────────────────────
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
