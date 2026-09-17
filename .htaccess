@@ -1,0 +1,83 @@
+# ═══════════════════════════════════════════════════════════════
+#  CITFLOW — configuração Apache 2.4
+#  Este arquivo acompanha o repositório: um `git pull` no servidor
+#  já aplica as regras, sem mexer na configuração do Apache.
+#  Requer "AllowOverride All" no <Directory> do vhost.
+# ═══════════════════════════════════════════════════════════════
+
+DirectoryIndex index.html
+AddDefaultCharset UTF-8
+ServerSignature Off
+
+# ─── Segurança: bloqueia o diretório .git do clone ──────────────
+# Sem isso, qualquer pessoa baixa o histórico do repositório pela web.
+RedirectMatch 404 /\.git
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule (^|/)\.git - [R=404,L]
+</IfModule>
+
+# ─── Canonical: www → sem www ───────────────────────────────────
+# Evita que o Google veja duas versões do mesmo site (conteúdo duplicado).
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTP_HOST} ^www\.citflow\.com\.br$ [NC]
+  RewriteRule ^(.*)$ https://citflow.com.br/$1 [R=301,L]
+</IfModule>
+
+# ─── HTTP → HTTPS ───────────────────────────────────────────────
+# ATENÇÃO: descomente SÓ depois que o certificado SSL estiver ativo
+# (certbot --apache). Antes disso, isto derruba o site em loop.
+#<IfModule mod_rewrite.c>
+#  RewriteEngine On
+#  RewriteCond %{HTTPS} !=on
+#  RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+#</IfModule>
+
+# ─── Compressão ─────────────────────────────────────────────────
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml
+  AddOutputFilterByType DEFLATE application/xml application/xhtml+xml
+  AddOutputFilterByType DEFLATE application/javascript text/javascript
+  AddOutputFilterByType DEFLATE application/json image/svg+xml
+</IfModule>
+
+# ─── Cache ──────────────────────────────────────────────────────
+<IfModule mod_expires.c>
+  ExpiresActive On
+  # Assets estáticos: cache longo
+  ExpiresByType image/png            "access plus 1 year"
+  ExpiresByType image/jpeg           "access plus 1 year"
+  ExpiresByType image/webp           "access plus 1 year"
+  ExpiresByType image/svg+xml        "access plus 1 year"
+  ExpiresByType image/x-icon         "access plus 1 year"
+  ExpiresByType text/css             "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType font/woff2           "access plus 1 year"
+  # HTML e arquivos de SEO: sempre revalidados, deploy aparece na hora
+  ExpiresByType text/html            "access plus 0 seconds"
+  ExpiresByType application/xml      "access plus 1 hour"
+  ExpiresByType text/plain           "access plus 1 hour"
+</IfModule>
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.(png|jpe?g|webp|svg|ico|css|js|woff2?)$">
+    Header set Cache-Control "public, immutable"
+  </FilesMatch>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "public, max-age=0, must-revalidate"
+  </FilesMatch>
+
+  # ─── Headers de segurança ─────────────────────────────────────
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# ─── MIME types ─────────────────────────────────────────────────
+<IfModule mod_mime.c>
+  AddType application/xml .xml
+  AddType text/plain .txt
+  AddType image/svg+xml .svg
+  AddType font/woff2 .woff2
+</IfModule>
