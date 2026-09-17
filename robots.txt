@@ -1,0 +1,15 @@
+# https://citflow.com.br/robots.txt
+User-agent: *
+Allow: /
+
+# Nada de indexar o diretório do clone git no servidor
+Disallow: /.git/
+
+# Bots de IA generativa — remova o bloco abaixo se quiser ser citado por eles
+User-agent: GPTBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+Sitemap: https://citflow.com.br/sitemap.xml
